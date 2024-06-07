@@ -1,18 +1,22 @@
 "use client"
 import { useGroupStore } from "@/frontend/features/group/stores/groupStore";
+import { useBaseModal } from "@/frontend/providers/BaseModalProvider";
 import { Avatar, Button, IconButton } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { FaPlus, FaSnapchat } from "react-icons/fa";
 import { HiOutlinePlusSm } from "react-icons/hi";
+import { CreateGroup } from "./CreateGroup";
+import { Profile } from "./Profile";
 
 export const SideNav = () => {
   const {groups, getGroupsAct} = useGroupStore(); 
+  const {modalOn} = useBaseModal();
 
   useEffect(() => {
     getGroupsAct();
   }, []);
 
-  console.log(groups)
+  
   return (
     <div
     className="
@@ -33,6 +37,7 @@ export const SideNav = () => {
           aria-label=""
           icon={<HiOutlinePlusSm size={24}/>}
           isRound={true}
+          onClick={() => modalOn(<CreateGroup/>, {title: 'Create a Group'})}
           />
         </div>
 
@@ -73,9 +78,13 @@ export const SideNav = () => {
         </ul>
       </div>
 
-      <div>
-        <Avatar/>
-      </div>
+      <IconButton 
+      aria-label=""
+      icon={<Avatar/>}
+      isRound={true}
+      onClick={() => modalOn(<Profile/>, {title: 'Update Your Profile'})}
+      >
+      </IconButton>
     </div>
   )
 }

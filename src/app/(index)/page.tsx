@@ -1,7 +1,6 @@
 //import Image from "next/image";
 
-import { ChatPage } from "@/frontend/pages/ChatPage";
-import apis from "@/routes/apis";
+import { redirect } from "next/navigation";
 //import { IUser } from "../_dtos/user-dto";
 
 // async function getUsers() {
@@ -11,12 +10,6 @@ import apis from "@/routes/apis";
 // }
 
 export default async function Home() {
-  //const users = await getUsers();
-  
-  return (
-    <main className="#flex h-full">
-      <ChatPage/>
-      
-    </main>
-  );
+  return redirect('/chatroom');
+  return <></>
 }

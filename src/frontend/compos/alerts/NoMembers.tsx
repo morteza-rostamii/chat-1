@@ -17,6 +17,8 @@ export const NoContent = ({
       <Button
       style={{display: btnTxt ? 'block' : 'none'}}
       onClick={onClick}
+      //variant={'outline'}
+      colorScheme="green"
       >
         {btnTxt}
       </Button>

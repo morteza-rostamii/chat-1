@@ -16,3 +16,9 @@ export interface IMessage {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type TCreateMessage = {
+  groupId: string,
+  message: string,
+  image?: string,
+};

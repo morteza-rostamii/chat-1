@@ -18,6 +18,7 @@ const MessageSchema = new Schema<IMessage>(
       ref: 'User',
       required: true,
     },
+    // parent message
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Message',

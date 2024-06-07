@@ -36,10 +36,22 @@ export async function middleware(req: NextRequest) {
   // //Object.keys((file as any)).forEach((el:any) => console.log(el))
   // const {myfile}:any = req;
   // console.log('---', myfile);
+  const session = await getSession();
 
-  
+  // not auth
+  if (!session) return NextResponse.next();
 
+  const reqHeaders = new Headers(req.headers);
+  reqHeaders.set('user', session.user);
 
-  const response = await updateSession(req);
+  const response = NextResponse.next({
+    request: {
+      headers: reqHeaders,
+    }
+  });
+
+  response.headers.set('user', session.user);
   return response;
+  //const response = await updateSession(req);
+  //return response;
 }

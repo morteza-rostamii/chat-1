@@ -1,20 +1,13 @@
 "use client"
-import helper from "@/utils/helper"
-import { faker } from '@faker-js/faker';
-import { useEffect, useMemo, useState } from "react";
-import { SearchBox } from "./SearchBox";
+import { useState } from "react";
 import { useGroupStore } from "@/frontend/features/group/stores/groupStore";
 import { MemberCard } from "./MemberCard";
 import { NoContent } from "../alerts/NoMembers";
-import { SearchedUsers } from "./SearchedUsers";
-import { ScrollBox } from "../ScrollBox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export const Groups = () => {
-  const [searchUser, setSearchUser] = useState(false);
-  const {activeGroup} = useGroupStore();
+  const {groups} = useGroupStore();
 
-  console.log(searchUser)
   return (
     <div
     className="
@@ -22,52 +15,32 @@ export const Groups = () => {
     hidden md:block
     "
     >
-      <header
-      className="
-      flex items-center
-      border-b-2 h-[60px] p-4
-      "
-      >
-        <SearchBox setSearchUser={setSearchUser}/>
-      </header>
-      
-      <div
-      style={{display: searchUser ? 'block' : 'none'}}
-      >
-        <ScrollArea 
-        style={{height: 'calc(100vh - 60px)'}}
-        >
-          <SearchedUsers setSearchUser={setSearchUser}/>
-        </ScrollArea>
-      </div>
-
       <section
-      style={{display: searchUser ? 'none' : 'block'}}
       >
         <div
         className="p-4"
         style={{
-          display: !activeGroup?.members?.length ? 'block' : 'none'
+          display: !groups?.length ? 'block' : 'none'
         }}
         >
           <NoContent
-          text={'This group does not have any member yet'}
-          btnTxt={'Find new member'}
-          onClick={() => setSearchUser(true)}
+          text={'You have no group at the moment!'}
+          btnTxt={'Create A New Group'}
+          
           />
         </div>
 
         <div 
         //className=" overflow-y-auto "
         style={{
-          display: activeGroup?.members?.length ? 'block' : 'none'
+          display: groups?.length ? 'block' : 'none'
         }}
         >
           <ScrollArea style={{height: 'calc(100vh - 68px)'}}>
             <h2
             className="text-lg font-bold #mb-4 text-green-600 p-4 pb-0 underline"
             >
-            {searchUser ? "Users" : "Group's Members"}
+            Groups
             </h2>
 
             <ul
@@ -77,9 +50,9 @@ export const Groups = () => {
             }}
             >
               {
-                activeGroup?.members?.length
+                groups?.members?.length
                 ?(
-                  activeGroup.members.map((member:any) => (
+                  groups.members.map((member:any) => (
                     <MemberCard
                     key={member.id}
                     item={member}

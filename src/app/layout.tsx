@@ -1,7 +1,10 @@
+
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./Providers";
+import { Toaster } from 'react-hot-toast';
+import { AuthGuard } from "./_guards/AuthGuard";
 
 const lato = Lato({ subsets: ["latin"], weight: '400' });
 
@@ -18,9 +21,11 @@ export default function RootLayout({
   return (
     <html lang="en">
         <body className={lato.className}>
-        <Providers>
-          {children}
-        </Providers>
+         
+          <Providers>
+            {children}
+          </Providers>
+          <Toaster />
         </body>
       </html>
   );

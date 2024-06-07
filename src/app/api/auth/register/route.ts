@@ -6,6 +6,7 @@ import { IRegister } from '@/dtos/auth-dto';
 
 import otpGenerator from 'otp-generator'
 import Otp from '@/app/_models/Otp';
+import {generateFromEmail} from 'unique-username-generator';
 
 // POST: /api/auth/register
 export async function POST(req: NextRequest) {
@@ -56,15 +57,22 @@ export async function POST(req: NextRequest) {
       )
     }
     else {
+
+      const username = generateFromEmail(body.email, 4);
+
       // create new user
-      const newUser = await User.create(body);
+      const newUser = await User.create({
+        email: body.email,
+        username,
+      });
+
       return NextResponse.json(
         {success: true, message: 'here otp', otp: newOtp.toObject(), user: newUser.toObject()},
         {status: HttpStatusCode.Created},
       )
     }
     
-    return NextResponse.json({});
+    //return NextResponse.json({});
   }
   catch(err:any) {
     return NextResponse.json(

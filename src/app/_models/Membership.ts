@@ -34,5 +34,5 @@ const MembershipSchema = new Schema<IMembership>(
   }
 );
 
-const Message = models.Message || model('Message', MembershipSchema);
-export default Message;
+const Membership = models.Membership || model('Membership', MembershipSchema);
+export default Membership;

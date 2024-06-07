@@ -1,15 +1,20 @@
 
+import { TCreateGroup } from '@/dtos/group-dto';
+import apis from '@/routes/apis';
 import helper from '@/utils/helper';
 import { faker } from '@faker-js/faker';
 import { create } from 'zustand'
 
 export const useGroupStore = create<any>((
   set: any, 
-  //get: any
+  get: any
 ) => ({
   groups: [],
   loadGroups: true,
   activeGroup: null,
+
+  notifications: [],
+  loadNotifications: true,
 
   loading: false,
 
@@ -18,26 +23,11 @@ export const useGroupStore = create<any>((
     set((s:any) => ({...s, loadGroup: true}));
     try {
       
-      const groups = Array.from({length: 12}).map((el:any) => {
-        return {
-          id: helper.getRandomId(),
-          name: faker.lorem.word(),
-          image: faker.image.urlPicsumPhotos(),
-          createdAt: faker.date,
-          members: Array.from({length: 12}).map(() => {
-            return {
-              id: helper.getRandomId(),
-              username: faker.person.firstName(),
-              image: faker.image.avatar(),
-            }
-          })
-        };
-      });
 
       set((s:any) => ({
         ...s,
-        groups: groups,
-        activeGroup: groups[0],
+        groups: [],
+        activeGroup: get().getgroups[0],
       }));
         
       set((s:any) => ({...s, loadGroup: false}));
@@ -49,6 +39,103 @@ export const useGroupStore = create<any>((
     }
   },
 
+  // get join group request
+  getNotificationsAct: async () => {
+    
+    set((s:any) => ({...s, loadNotifications: true}));
+    try {
+      
+      const notifications = Array.from({length: 12}).map((el:any) => {
+        return {
+          id: helper.getRandomId(),
+          sender: {
+            id: helper.getRandomId(),
+            username: faker.lorem.word(),
+            image: faker.image.avatar(),
+          },
+          content: faker.lorem.words({min:5, max:10}),
+          link: {
+            href: '#',
+            name: 'visit this group'
+          },
+          createdAct: new Date(),
+        };
+      });
+
+      set((s:any) => ({
+        ...s,
+        notifications: notifications,
+      }));
+        
+      set((s:any) => ({...s, loadNotifications: false}));
+    }
+    catch(error:any) {
+      console.log(error?.message || error);
+      console.log(error?.response?.data);
+      set((s:any) => ({...s, loadNotifications: false}));
+    }
+  },
+
+  createGroupAct: async (payload: TCreateGroup) => {
+    
+    set((s:any) => ({...s, loading: true}));
+    try {
+      
+      const promise = apis.createGroup(payload);
+      const result = await promise;
+      const data = result?.data;
+      
+      if (!data) return false;
+
+      set((s:any) => ({
+        ...s,
+        groups: [...s.groups, data.group],
+      }));
+        
+      set((s:any) => ({...s, loading: false}));
+      return true;
+    }
+    catch(error:any) {
+      console.log(error?.message || error);
+      console.log(error?.response?.data);
+      set((s:any) => ({...s, loading: false}));
+      return false;
+    }
+  },
+
+  // send join group request
+  sendFriendRequestAct: async () => {
+    
+    set((s:any) => ({...s, loadNotifications: true}));
+    try {
+      
+      const notifications = Array.from({length: 12}).map((el:any) => {
+        return {
+          id: helper.getRandomId(),
+          sender: {
+            id: helper.getRandomId(),
+            username: faker.lorem.word(),
+            image: faker.image.avatar(),
+          },
+          content: faker.lorem.words({min:5, max:10}),
+          href: "#",
+          createdAct: new Date(),
+        };
+      });
+
+      set((s:any) => ({
+        ...s,
+        notifications: notifications,
+      }));
+        
+      set((s:any) => ({...s, loadNotifications: false}));
+    }
+    catch(error:any) {
+      console.log(error?.message || error);
+      console.log(error?.response?.data);
+      set((s:any) => ({...s, loadNotifications: false}));
+    }
+  },
 }));
 
 //@ts-ignore

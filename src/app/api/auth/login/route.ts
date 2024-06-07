@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         //const expires = new Date(Date.now() + 10 * 1000);
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
         const session = await encrypt({
-          user, 
+          user: JSON.stringify(user), 
           expires,
         });
 
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json(
-          {message: 'logged in successfully'},
+          {user: user.toObject(), message: 'logged in successfully'},
           {status: HttpStatusCode.Created},
         );
       }

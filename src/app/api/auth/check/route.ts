@@ -1,21 +1,22 @@
 import {HttpStatusCode} from 'axios';
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/app/_libs/jwt';
+import { getUserFromHeader } from '@/app/_utils/helper';
 
 
 // POST: /api/auth/check-auth
 export async function POST(req: NextRequest) {
   console.log('================****8');
   try {
-    const payload = await getSession();
+    const authUser = getUserFromHeader();
 
-    if (!payload) return NextResponse.json(
+    if (!authUser?.email) return NextResponse.json(
       {message: 'not auth', user: null},
       {status: HttpStatusCode.BadRequest},
     );
 
     return NextResponse.json(
-      {message: 'is auth', user: payload.user},
+      {message: 'is auth', user: authUser},
       {status: HttpStatusCode.Ok},
     );
   }

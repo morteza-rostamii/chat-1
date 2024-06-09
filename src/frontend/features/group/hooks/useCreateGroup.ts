@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { useGroupStore } from "../stores/groupStore";
+import apis from "@/routes/apis";
+import { useBaseModal } from "@/frontend/providers/BaseModalProvider";
 
 export function useCreateGroup() {
   const [formInput, setFormInput] = useState({
@@ -9,7 +11,9 @@ export function useCreateGroup() {
     file: null,
   });
   // string after uploading the file
-  const [image, setImage] = useState();
+  const [image, setImage] = useState('');
+  // formData with file
+  const [formData, setFormData] = useState(null);
 
   const [errors, setErrors] = useState({
     name: [],
@@ -19,8 +23,10 @@ export function useCreateGroup() {
   // auth store
   const {
     loading,
+    createGroupAct,
   } = useGroupStore();
   const router = useRouter();
+  const {onClose} = useBaseModal();
 
   const validate = () => {
     const errors:any = {
@@ -38,15 +44,20 @@ export function useCreateGroup() {
   }
 
   const handInputChange = (e: any) => {
-    const value = e.target.value;
-    const name = e.target.name;
-  
+    const {name, value, files} = e.target;
+    
+    const formData:any = new FormData();
+    if (name === 'file') {
+      formData.append(name, files[0]);
+      setFormData(formData);
+    }
+
     switch(name) {
       case 'name':
         setFormInput((c:any) => ({...c, name: value}));
         break;
       case 'file':
-        setFormInput((c:any) => ({...c, file: e.target.files[0]}));
+        setFormInput((c:any) => ({...c, file: files[0]}));
         break;
       default:
         break;
@@ -63,11 +74,17 @@ export function useCreateGroup() {
       errors.file.length
     ) return;
 
-    // store otp in localStorage
+    // create group: with: name, image
+    const success = await createGroupAct({
+      name: formInput.name,
+      formData,
+    });
 
-    console.log(formInput);
-      
-    //setFormInput({otp: ''});
+    if (success) {
+      setFormInput({name: '', file: null});
+      setImage('');
+      onClose();
+    }
     //router.push('/');
   }
 

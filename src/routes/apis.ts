@@ -1,6 +1,6 @@
 import { API_URL } from "@/app/_libs/config";
 import Axios from "./axiosConfig";
-import { ILogin, IRegister } from "@/dtos/auth-dto";
+import { ILogin, IRegister, TUpload } from "@/dtos/auth-dto";
 import { TCreateGroup } from "@/dtos/group-dto";
 
 const apis = {
@@ -62,7 +62,7 @@ const apis = {
 
   // update profile
 
-  // groups
+  // POST: /groups (create)
   async createGroup(payload: TCreateGroup) {
     try {
       const promise = Axios.post(
@@ -76,6 +76,22 @@ const apis = {
     }
   },
 
+  // upload file
+  async upload(payload: TUpload) {
+    try {
+      const promise = Axios.post(
+        API_URL + 'upload',
+        payload,
+        {
+          headers: {'Content-Type': 'multipart/form-data'},
+        },
+      );
+      return promise;
+    }
+    catch(err:any) {
+      console.log(err?.message || err);
+    }
+  },
   //******** messages */
 };
 

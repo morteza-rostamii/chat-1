@@ -3,7 +3,11 @@ import { TCreateGroup } from '@/dtos/group-dto';
 import apis from '@/routes/apis';
 import helper from '@/utils/helper';
 import { faker } from '@faker-js/faker';
+import toast from 'react-hot-toast';
 import { create } from 'zustand'
+
+const toastError = (msg: string) => toast.error(msg || 'Some Error!');
+const toastSuccess = (msg: string) => toast.success(msg || 'Some message!');
 
 export const useGroupStore = create<any>((
   set: any, 
@@ -76,29 +80,40 @@ export const useGroupStore = create<any>((
     }
   },
 
-  createGroupAct: async (payload: TCreateGroup) => {
+  createGroupAct: async (payload: any) => {
     
     set((s:any) => ({...s, loading: true}));
     try {
-      
-      const promise = apis.createGroup(payload);
+      // upload file
+      const result1 = await apis.upload(payload.formData);
+      const data1 = result1?.data;
+      if (!data1) return false;
+      const image = data1.fileName;
+
+      const promise = apis.createGroup({
+        name: payload.name,
+        image: image,
+      });
+
       const result = await promise;
       const data = result?.data;
       
       if (!data) return false;
-
+      console.log('Group created:---', data);
       set((s:any) => ({
         ...s,
         groups: [...s.groups, data.group],
       }));
         
       set((s:any) => ({...s, loading: false}));
+      toastSuccess('Group Created!');
       return true;
     }
     catch(error:any) {
       console.log(error?.message || error);
       console.log(error?.response?.data);
       set((s:any) => ({...s, loading: false}));
+      toastError("Can't create Group!");
       return false;
     }
   },

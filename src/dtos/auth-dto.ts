@@ -7,3 +7,7 @@ export interface ILogin {
   otp: string;
   email: string;
 };
+
+export type TUpload = {
+  formData: FormData | null,
+};

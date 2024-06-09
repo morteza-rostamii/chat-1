@@ -6,6 +6,7 @@ import { TCreateGroup } from '@/dtos/group-dto';
 import { getUserFromHeader } from '@/app/_utils/helper';
 import Group from '@/app/_models/Group';
 import Membership from '@/app/_models/Membership';
+import { SUPABASE_STORAGE_URL } from '@/app/_libs/config';
 
 // POST: /groups (create)
 export async function POST(req: NextRequest) {
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const newGroup = await Group.create({
       name: body.name,
-      image: body.image,
+      image: SUPABASE_STORAGE_URL + body.image,
       owner: authUser._id || authUser.id,
     });
 
@@ -54,8 +55,12 @@ export async function POST(req: NextRequest) {
       role: 'owner',
     });
 
+    // edit group
+    //newGroup.image = SUPABASE_STORAGE_URL +  newGroup.image;
+    const groupObj = newGroup.toObject();
+
     return NextResponse.json(
-      {newGroup, member, message: 'New group was created'},
+      {group: groupObj, member, message: 'New group was created'},
       {status: HttpStatusCode.Created},
     );
   }

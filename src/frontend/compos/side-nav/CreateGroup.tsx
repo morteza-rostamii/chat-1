@@ -61,6 +61,8 @@ export const CreateGroup = () => {
         <Button
         type="submit"
         colorScheme="green"
+        isLoading={loading}
+        isDisabled={!!(errors.name.length) || !!(errors.file.length)}
         >
           Create
         </Button>

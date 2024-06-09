@@ -12,10 +12,10 @@ export async function POST(req: NextRequest) {
   try {
     await connectMongo();
 
-    console.log('-----------------/upload')
+    console.log('-----------------/upload');
 
     const formData = await req.formData();
-
+    //return NextResponse.json({formData});
     const file = formData.get('file') as File;
 
     if (!file) return NextResponse.json(
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
 
     return NextResponse.json(
-      {message: 'File was uploaded'},
+      {fileName, message: 'File was uploaded'},
       {status: HttpStatusCode.Created},
     );
   }
